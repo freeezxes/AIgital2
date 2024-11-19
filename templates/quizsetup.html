@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Setup Your Quiz Room</title>
+  <style>
+    /* Basic reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #2a75e3;
+    }
+
+    .container {
+      width: 300px;
+      text-align: center;
+      color: white;
+    }
+
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      background-color: white;
+      color: #2a75e3;
+      border-radius: 8px;
+      padding: 8px;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 14px;
+      cursor: pointer;
+      margin-bottom: 20px;
+    }
+
+    .title {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      text-align: left;
+      margin-bottom: 5px;
+    }
+
+    .form-group input[type="text"] {
+      width: 100%;
+      padding: 10px 35px 10px 10px; /* Add padding-right for paperclip space */
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    /* Style for the paperclip icon */
+    .paperclip-icon {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #a3a3a3;
+    }
+
+    .file-input {
+      display: none; /* Hide the actual file input */
+    }
+
+    /* Style for the selected file name */
+    .file-name-list {
+      font-size: 14px;
+      color: #ffffff;
+      margin-top: 5px;
+      text-align: left;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .remove-file-button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      margin-left: 10px;
+      padding: 2px 8px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+
+    .continue-button {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      background-color: white;
+      color: #2a75e3;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+    }
+
+    .continue-button:hover {
+      background-color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Back button -->
+    <a href="#" class="back-button">← Back</a>
+
+    <!-- Title -->
+    <div class="title">Setup Your Quiz Room</div>
+
+    <!-- Form fields -->
+    <div class="form-group">
+      <label>Room Name:</label>
+      <input type="text" placeholder="Enter room name">
+    </div>
+
+    <div class="form-group">
+      <label>Quiz Topic:</label>
+      <input type="text" placeholder="Enter quiz topic">
+      
+      <!-- Paperclip icon and file input -->
+      <span class="paperclip-icon" onclick="document.getElementById('fileInput').click()">📎</span>
+      <input type="file" id="fileInput" class="file-input" multiple onchange="handleFileSelect(event)">
+    </div>
+
+    <!-- Display selected files below the input field -->
+    <div id="fileList" class="file-name-list"></div> <!-- Display selected files here -->
+
+    <div class="form-group">
+      <label>Room Size:</label>
+      <input type="text" placeholder="Enter room size">
+    </div>
+
+    <div class="form-group">
+      <label>Question Quantity:</label>
+      <input type="text" placeholder="Enter question quantity">
+    </div>
+
+    <button class="continue-button" onclick="openFiles()">Continue</button>
+  </div>
+
+  <script>
+    let selectedFiles = [];
+
+    function handleFileSelect(event) {
+      const files = event.target.files;
+      for (let i = 0; i < files.length; i++) {
+        selectedFiles.push(files[i]);
+      }
+      displayFiles();
+    }
+
+    function displayFiles() {
+      const fileList = document.getElementById('fileList');
+      fileList.innerHTML = ''; // Clear current file list
+      selectedFiles.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item';
+        fileItem.textContent = file.name;
+
+        // Remove file button
+        const removeButton = document.createElement('button');
+        removeButton.className = 'remove-file-button';
+        removeButton.textContent = 'Remove';
+        removeButton.onclick = () => removeFile(index);
+
+        fileItem.appendChild(removeButton);
+        fileList.appendChild(fileItem);
+      });
+    }
+
+    function removeFile(index) {
+      selectedFiles.splice(index, 1); // Remove file from array
+      displayFiles(); // Refresh the file list display
+    }
+
+    function openFiles() {
+      if (selectedFiles.length > 0) {
+        selectedFiles.forEach(file => {
+          const fileURL = URL.createObjectURL(file);
+          window.open(fileURL); // Open each selected file in a new tab
+        });
+      } else {
+        alert("No files selected.");
+      }
+    }
+  </script>
+
+</body>
+</html>

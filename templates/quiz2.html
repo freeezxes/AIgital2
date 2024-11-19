@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz Game</title>
+  <style>
+    /* Basic reset and styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #2a75e3;
+      color: white;
+      font-family: Arial, sans-serif;
+    }
+
+    .question-container {
+      width: 300px;
+      text-align: center;
+    }
+
+    .question {
+      margin-bottom: 15px;
+      font-size: 18px;
+      padding: 10px;
+      border-radius: 10px;
+      border: 2px solid #fff;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      padding: 10px;
+      background-color: white;
+      color: #333;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.2s;
+    }
+
+    .option:hover {
+      transform: scale(1.05);
+    }
+
+    .option.correct {
+      background-color: #4CAF50 !important;
+      color: white;
+    }
+
+    .option.incorrect {
+      background-color: #f44336 !important;
+      color: white;
+    }
+
+    .feedback {
+      margin-top: 20px;
+      font-size: 16px;
+      font-weight: bold;
+    }
+
+    .explanation {
+      margin-top: 10px;
+      font-size: 14px;
+      font-style: italic;
+      color: #eee;
+    }
+
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="question-container">
+    <div id="question" class="question">Question will appear here</div>
+    <div class="options">
+      <div class="option" onclick="checkAnswer(this, 0)">Option A</div>
+      <div class="option" onclick="checkAnswer(this, 1)">Option B</div>
+      <div class="option" onclick="checkAnswer(this, 2)">Option C</div>
+      <div class="option" onclick="checkAnswer(this, 3)">Option D</div>
+    </div>
+    <div id="feedback" class="feedback hidden"></div>
+    <div id="explanation" class="explanation hidden"></div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "What is the capital of France?",
+        options: ["Paris", "Berlin", "Madrid", "Rome"],
+        correctIndex: 0,
+        description: "Paris is the capital city of France, known for its landmarks like the Eiffel Tower and Louvre Museum. It has been a global center for art, culture, and cuisine."
+      },
+      {
+        text: "What is 2 + 2?",
+        options: ["3", "4", "5", "6"],
+        correctIndex: 1,
+        description: "2 + 2 equals 4. This is a basic arithmetic fact used in everyday mathematics."
+      },
+      {
+        text: "Which planet is known as the Red Planet?",
+        options: ["Earth", "Jupiter", "Mars", "Saturn"],
+        correctIndex: 2,
+        description: "Mars is called the Red Planet due to its reddish appearance caused by iron oxide (rust) on its surface."
+      },
+      {
+        text: "Who wrote 'To be, or not to be'?",
+        options: ["Hemingway", "Shakespeare", "Austen", "Poe"],
+        correctIndex: 1,
+        description: "This famous line comes from William Shakespeare's play 'Hamlet.' It's part of a soliloquy exploring existential themes."
+      },
+      {
+        text: "Which ocean is the largest?",
+        options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+        correctIndex: 3,
+        description: "The Pacific Ocean is the largest and deepest ocean, covering more area than all the landmasses combined."
+      },
+      {
+        text: "What is the smallest prime number?",
+        options: ["0", "1", "2", "3"],
+        correctIndex: 2,
+        description: "2 is the smallest prime number because it is greater than 1 and divisible only by itself and 1. It's also the only even prime number."
+      },
+      {
+        text: "Which country is known as the Land of the Rising Sun?",
+        options: ["China", "India", "Japan", "Thailand"],
+        correctIndex: 2,
+        description: "Japan is called the Land of the Rising Sun because of its location to the east of Asia, where the sun rises first."
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+
+    function loadQuestion() {
+      const question = questions[currentQuestionIndex];
+      document.getElementById("question").textContent = question.text;
+      const options = document.querySelectorAll(".option");
+      options.forEach((option, index) => {
+        option.textContent = question.options[index];
+        option.className = "option"; // Reset classes
+        option.onclick = () => checkAnswer(option, index === question.correctIndex);
+      });
+      document.getElementById("feedback").classList.add("hidden");
+      document.getElementById("explanation").classList.add("hidden");
+    }
+
+    function checkAnswer(selectedOption, isCorrect) {
+      const feedback = document.getElementById("feedback");
+      const explanation = document.getElementById("explanation");
+      const options = document.querySelectorAll(".option");
+
+      options.forEach(option => option.onclick = null); // Disable all options
+
+      if (isCorrect) {
+        selectedOption.classList.add("correct");
+        feedback.textContent = "Correct!";
+        feedback.classList.remove("hidden");
+      } else {
+        selectedOption.classList.add("incorrect");
+        const correctAnswer = questions[currentQuestionIndex].options[questions[currentQuestionIndex].correctIndex];
+        const explanationText = questions[currentQuestionIndex].description;
+        feedback.textContent = `Incorrect! The correct answer is: ${correctAnswer}.`;
+        explanation.textContent = explanationText;
+        feedback.classList.remove("hidden");
+        explanation.classList.remove("hidden");
+        options[questions[currentQuestionIndex].correctIndex].classList.add("correct");
+      }
+
+      setTimeout(() => {
+        currentQuestionIndex = (currentQuestionIndex + 1) % questions.length;
+        loadQuestion();
+      }, 3000); // Wait 3 seconds before loading next question
+    }
+
+    // Load the first question
+    loadQuestion();
+  </script>
+</body>
+</html>
